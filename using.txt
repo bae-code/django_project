@@ -1,0 +1,10 @@
+- db 만들고 하는 작업
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+- 서버 실행하는 작업
+
+python manage.py runserver
+
