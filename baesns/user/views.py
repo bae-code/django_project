@@ -18,20 +18,26 @@ def sign_up_view(request):
         else:
             return render(request, 'user/signup.html')
     elif request.method == 'POST':
-        username = request.POST.get('username',None)
-        password = request.POST.get('password',None)
-        password2 = request.POST.get('password2',None)
-        bio = request.POST.get('bio',None)
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        password2 = request.POST.get('password2','')
+        bio = request.POST.get('bio','')
 
         me = get_user_model().objects.filter(username=username)
 
         if password != password2:
-            return render(request,'user/signup.html')
-        elif me:
-            return HttpResponse('이미 사용중인 아이디입니다')
+
+            return render(request,'user/signup.html',{'error':'패스워드를 확인해주세요.'})
         else:
-            UserModel.objects.create_user(username=username,password=password,bio=bio)
-            return redirect('/sign-in')
+            if username == '' or password =='':
+                return render(request,'user/signup.html',{'error':'이름과 패스워드는 필수입니다.'})
+
+            me = get_user_model().objects.filter(username=username)
+            if me:
+                return render(request,'user/signup.html',{'error':'사용자아이디가 존재합니다.'})
+            else:
+                UserModel.objects.create_user(username=username,password=password,bio=bio)
+                return redirect('/sign-in')
 
 
 def sign_in_view(request):
@@ -43,8 +49,8 @@ def sign_in_view(request):
             return render(request, 'user/signin.html')
 
     elif request.method == 'POST':
-        username = request.POST.get('username',None)
-        password = request.POST.get('password',None)
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
         
         me = auth.authenticate( username= username, password= password)
         print(me)
@@ -52,8 +58,7 @@ def sign_in_view(request):
             auth.login(request, me)
             return redirect('/')
         else:
-            print('fffa')
-            return redirect('/sign-in')
+            return render(request, 'user/signin.html', {'error': '아이디 혹은 패스워드를 확인하세요.'})
 
 @login_required
 def logout(request):

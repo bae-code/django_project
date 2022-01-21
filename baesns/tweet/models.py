@@ -1,5 +1,7 @@
 from django.db import models
 from user.models import UserModel
+from taggit.managers import TaggableManager
+
 # Create your models here.
 
 class TweetModel(models.Model):
@@ -10,7 +12,7 @@ class TweetModel(models.Model):
     content = models.CharField( max_length=100 , default='')
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-
+    tags = TaggableManager(blank=True)
 
 class TweetComment(models.Model):
     class Meta:
@@ -20,3 +22,4 @@ class TweetComment(models.Model):
     comment = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
